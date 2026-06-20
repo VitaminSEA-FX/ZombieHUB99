@@ -96,6 +96,24 @@ local itemCache = {}
 local itemTween = nil
 local itemTweening = false
 
+local CURRENT_PRIORITY = 0
+-- 0 = ว่าง, 1 = Item Tween, 2 = Auto Food, 3 = Auto Skip
+
+local function acquirePriority(level)
+    if CURRENT_PRIORITY > level then
+        return false
+    end
+
+    CURRENT_PRIORITY = level
+    return true
+end
+
+local function releasePriority(level)
+    if CURRENT_PRIORITY == level then
+        CURRENT_PRIORITY = 0
+    end
+end
+
 --==================================================
 -- CHARACTER
 --==================================================
@@ -1038,7 +1056,7 @@ task.spawn(function()
     while true do
         task.wait(0.2)
 
-        if AUTO_SKIP then
+        if AUTO_SKIP and acquirePriority(3) then
             local currentlyVisibleButtons = {}
 
             pcall(function()
@@ -1078,6 +1096,7 @@ task.spawn(function()
                                     1
                                 )
                             end)
+					
                         end
                     end
                 end
@@ -1089,6 +1108,7 @@ task.spawn(function()
                     end
                 end
             end)
+			releasePriority(3)
         end
     end
 end)
@@ -1851,7 +1871,7 @@ task.spawn(function()
     while true do
         task.wait(600)
 
-        if AUTO_FOOD then
+        if AUTO_FOOD and acquirePriority(2) then
 
             VirtualInputManager:SendKeyEvent(
                 true,
@@ -1902,12 +1922,8 @@ task.spawn(function()
 
             task.wait(0.1)
 
-            VirtualInputManager:SendKeyEvent(
-                false,
-                Enum.KeyCode.One,
-                false,
-                game
-            )
+            VirtualInputManager:SendKeyEvent( false, Enum.KeyCode.One, false, game )
+			releasePriority(2)
         end
     end
 end)
@@ -1940,7 +1956,7 @@ end)
 
 task.spawn(function()
     while task.wait(0.25) do
-        if ITEM_TWEEN and not itemTweening then
+        if ITEM_TWEEN and not itemTweening and acquirePriority(1) then
             local success, err = pcall(function()
                 local item, pos, dist = getClosestItem()
 
@@ -1961,6 +1977,7 @@ task.spawn(function()
                     task.wait(0.5)
                 end
             end)
+			releasePriority(1)
 
             if not success then
                 warn("Item Tween Error:", err)
