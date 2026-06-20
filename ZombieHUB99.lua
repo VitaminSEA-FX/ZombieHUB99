@@ -82,6 +82,9 @@ local AUTO_SKIP = false
 
 local DISABLE_REWARD_EVENTS = false
 
+local MENU_MINIMIZED = false
+
+
 local ITEM_TWEEN = false
 local ITEM_TWEEN_SPEED = 170
 local ITEM_HOLD_E_TIME = 1.5
@@ -186,6 +189,19 @@ title.Font = Enum.Font.GothamBold
 title.TextSize = 20
 
 title.TextColor3 = Color3.new(1,1,1)
+
+local minimizeBtn = Instance.new("TextButton")
+minimizeBtn.Parent = frame
+minimizeBtn.Size = UDim2.new(0,40,0,32)
+minimizeBtn.Position = UDim2.new(1,-45,0,6)
+minimizeBtn.BackgroundColor3 = Color3.fromRGB(60,60,60)
+minimizeBtn.TextColor3 = Color3.new(1,1,1)
+minimizeBtn.Font = Enum.Font.GothamBold
+minimizeBtn.TextSize = 18
+minimizeBtn.Text = "-"
+minimizeBtn.BorderSizePixel = 0
+
+Instance.new("UICorner", minimizeBtn)
 
 --==================================================
 -- BUTTON CREATOR
@@ -734,6 +750,24 @@ local function tweenToPosition(targetObj, targetPos)
 end
 
 
+local function setMenuMinimized(state)
+    MENU_MINIMIZED = state
+
+    for _, child in ipairs(frame:GetChildren()) do
+        if child:IsA("GuiObject") then
+            if child ~= title and child ~= minimizeBtn then
+                child.Visible = not MENU_MINIMIZED
+            end
+        end
+    end
+
+    frame.Size = MENU_MINIMIZED
+        and UDim2.new(0,500,0,45)
+        or UDim2.new(0,500,0,960)
+
+    minimizeBtn.Text = MENU_MINIMIZED and "+" or "-"
+end
+
 updateUI()
 
 --==================================================
@@ -1103,6 +1137,11 @@ itemAutoRefreshBtn.MouseButton1Click:Connect(function()
     ITEM_AUTO_REFRESH = not ITEM_AUTO_REFRESH
     updateUI()
 end)
+
+minimizeBtn.MouseButton1Click:Connect(function()
+    setMenuMinimized(not MENU_MINIMIZED)
+end)
+
 --==================================================
 -- SAFE HEIGHT UPDATE
 --==================================================
