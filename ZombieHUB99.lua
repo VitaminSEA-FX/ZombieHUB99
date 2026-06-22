@@ -964,7 +964,7 @@ skipBtn.MouseButton1Click:Connect(function()
 
 end)
 local LAST_CLICK_TIME = 0
-local CLICK_COOLDOWN = 2
+local CLICK_COOLDOWN = 5
 
 local TargetNames = {
     "skip",
@@ -1054,7 +1054,7 @@ end
 
 task.spawn(function()
     while true do
-        task.wait(0.2)
+        task.wait(1)
 
         if AUTO_SKIP and acquirePriority(3) then
             local currentlyVisibleButtons = {}
@@ -1832,7 +1832,7 @@ RunService.Heartbeat:Connect(function()
 
     if SPEED_ENABLED then
         hum.WalkSpeed = WALK_SPEED_VALUE
-		print("Current Speed:", hum.WalkSpeed)
+		
     else
         hum.WalkSpeed = NORMAL_SPEED
     end
