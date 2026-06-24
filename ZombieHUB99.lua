@@ -1869,7 +1869,7 @@ UserInputService.JumpRequest:Connect(function()
 end)
 task.spawn(function()
     while true do
-        task.wait(900)
+        task.wait(700)
 
         if AUTO_FOOD and acquirePriority(2) then
 
