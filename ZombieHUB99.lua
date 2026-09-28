@@ -40,8 +40,8 @@ local AUTO_E = false
 local AUTO_REEQUIP = false
 local SAFE_ZONE = false
 
-local FIRE_RATE = 0.01
-local SHOT_COOLDOWN = 0.01
+local FIRE_RATE = 0.05
+local SHOT_COOLDOWN = 0.05
 
 local MAX_DISTANCE = 200
 local CLOSE_RANGE = 6
@@ -1807,7 +1807,7 @@ task.spawn(function()
 
         else
 
-            task.wait(0.01)
+            task.wait(0.05)
         end
     end
 end)
